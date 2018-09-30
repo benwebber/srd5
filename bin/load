@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+
+tail -n +2 \
+  | sqlite3 -init "${DIR}/../share/schema.sql" -cmd '.mode csv' -cmd '.import /dev/stdin spells' "${1}"
+
+sqlite3 "${1}" < "${DIR}/../share/clean.sql"

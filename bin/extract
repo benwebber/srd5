@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+
+
+in_to_px() {
+  printf '%.0f' "$(bc <<< "${1} * 72")"
+}
+
+
+pdftotext -raw \
+          -nopgbrk \
+          -f ${2} \
+          -l ${3} \
+          -x "$(in_to_px 0.75)" \
+          -y "$(in_to_px 1)" \
+          -W "$(in_to_px 7)" \
+          -H "$(in_to_px 9)" \
+          "${1}" - \
+  | "${DIR}/../libexec/clean.awk"
